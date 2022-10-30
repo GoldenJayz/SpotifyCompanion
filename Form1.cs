@@ -13,6 +13,7 @@ namespace SpotifyCompanion
         private readonly SessionCollection _sessions;
         private AudioSessionControl _session;
         private int _processId;
+        private bool _hooked = false;
 
 
         public Form1()
@@ -34,16 +35,30 @@ namespace SpotifyCompanion
 
 
             _gkh.KeyDown += new KeyEventHandler(gkh_KeyDown);
-
+            HookSpotify();
             
-            Process[] pl = Process.GetProcessesByName("Spotify");
 
-            foreach (Process process in pl)
+        }
+
+
+        private void HookSpotify()
+        {
+            while (_hooked == false)
             {
-                if (process.MainWindowTitle.Length <= 0) continue;
-                Console.WriteLine(process.MainWindowTitle);
-                _processId = process.Id;
+                Process[] pl = Process.GetProcessesByName("Spotify");
+
+                foreach (Process process in pl)
+                {
+                    if (process.MainWindowTitle.Length <= 0) continue;
+                    Console.WriteLine(process.MainWindowTitle);
+                    _processId = process.Id;
+                    _hooked = true;
+                }
+
+
             }
+
+            Console.WriteLine("hooked");
 
             for (int i = 0; i < _sessions.Count; i++)
             {
@@ -52,8 +67,8 @@ namespace SpotifyCompanion
                     this._session = _sessions[i];
                 }
             }
-        }
 
+        }
 
         private void gkh_KeyDown(object sender, KeyEventArgs e)
         {
