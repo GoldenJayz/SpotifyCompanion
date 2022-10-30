@@ -1,7 +1,6 @@
 ﻿using NAudio.CoreAudioApi;
 using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Utilities;
 
@@ -19,7 +18,6 @@ namespace SpotifyCompanion
         public Form1()
         {
             InitializeComponent();
-
             var mde = new MMDeviceEnumerator();
             var md = mde.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             _sessions = md.AudioSessionManager.Sessions;
@@ -32,8 +30,6 @@ namespace SpotifyCompanion
             _gkh.HookedKeys.Add(Keys.RShiftKey);
             _gkh.HookedKeys.Add(Keys.Home);
             _gkh.HookedKeys.Add(Keys.End);
-
-
             _gkh.KeyDown += new KeyEventHandler(gkh_KeyDown);
             HookSpotify();
             
@@ -47,24 +43,19 @@ namespace SpotifyCompanion
             {
                 Process[] pl = Process.GetProcessesByName("Spotify");
 
-                foreach (Process process in pl)
-                {
-                    if (process.MainWindowTitle.Length <= 0) continue;
-                    Console.WriteLine(process.MainWindowTitle);
-                    _processId = process.Id;
-                    _hooked = true;
-                }
-
-
+            foreach (Process process in pl)
+            {
+                if (process.MainWindowTitle.Length <= 0) continue;
+                Console.WriteLine(process.MainWindowTitle);
+                _processId = process.Id;
             }
-
-            Console.WriteLine("hooked");
 
             for (int i = 0; i < _sessions.Count; i++)
             {
                 if (_sessions[i].GetProcessID == _processId)
                 {
                     this._session = _sessions[i];
+                    break;
                 }
             }
 
@@ -76,9 +67,7 @@ namespace SpotifyCompanion
             {
                 case Keys.RShiftKey:
                     listBox1.Items.Add("Shift key pressed");
-
                     this._session.SimpleAudioVolume.Mute = !this._session.SimpleAudioVolume.Mute;
-                    
                     break;
 
                 case Keys.Home:
