@@ -43,12 +43,17 @@ namespace SpotifyCompanion
             {
                 Process[] pl = Process.GetProcessesByName("Spotify");
 
-            foreach (Process process in pl)
-            {
-                if (process.MainWindowTitle.Length <= 0) continue;
-                Console.WriteLine(process.MainWindowTitle);
-                _processId = process.Id;
+                foreach (Process process in pl)
+                {
+                    if (process.MainWindowTitle.Length <= 0) continue;
+                    Console.WriteLine(process.MainWindowTitle);
+                    _processId = process.Id;
+                    _hooked = true;
+                }
+
             }
+
+            Console.WriteLine("hooked");
 
             for (int i = 0; i < _sessions.Count; i++)
             {
@@ -58,7 +63,6 @@ namespace SpotifyCompanion
                     break;
                 }
             }
-
         }
 
         private void gkh_KeyDown(object sender, KeyEventArgs e)
