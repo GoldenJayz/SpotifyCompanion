@@ -9,57 +9,51 @@ namespace SpotifyCompanion
 {
     public partial class Form1 : Form
     {
-        private readonly globalKeyboardHook gkh = new globalKeyboardHook();
-        private readonly MMDeviceEnumerator mde;
-        private readonly MMDevice MD;
-        private readonly SessionCollection sessions;
-        private AudioSessionControl session;
-        private int processId;
-
+        private readonly globalKeyboardHook _gkh = new globalKeyboardHook();
+        private readonly SessionCollection _sessions;
+        private AudioSessionControl _session;
+        private int _processId;
 
 
         public Form1()
         {
             InitializeComponent();
 
-            mde = new MMDeviceEnumerator();
-            MD = mde.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-            sessions = MD.AudioSessionManager.Sessions;
+            var mde = new MMDeviceEnumerator();
+            var md = mde.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            _sessions = md.AudioSessionManager.Sessions;
 
         }
 
 
-
         private void Form1_Load(object sender, EventArgs e)
         {
-            gkh.HookedKeys.Add(Keys.RShiftKey);
-            gkh.HookedKeys.Add(Keys.Home);
-            gkh.HookedKeys.Add(Keys.End);
+            _gkh.HookedKeys.Add(Keys.RShiftKey);
+            _gkh.HookedKeys.Add(Keys.Home);
+            _gkh.HookedKeys.Add(Keys.End);
 
 
-            gkh.KeyDown += new KeyEventHandler(gkh_KeyDown);
+            _gkh.KeyDown += new KeyEventHandler(gkh_KeyDown);
 
             
             Process[] pl = Process.GetProcessesByName("Spotify");
 
             foreach (Process process in pl)
             {
-
-                if (process.MainWindowTitle.Length > 0)
-                {
-                    Console.WriteLine(process.MainWindowTitle);
-                    processId = process.Id;
-                }
+                if (process.MainWindowTitle.Length <= 0) continue;
+                Console.WriteLine(process.MainWindowTitle);
+                _processId = process.Id;
             }
 
-            for (int i = 0; i < sessions.Count; i++)
+            for (int i = 0; i < _sessions.Count; i++)
             {
-                if (sessions[i].GetProcessID == processId)
+                if (_sessions[i].GetProcessID == _processId)
                 {
-                    this.session = sessions[i];
+                    this._session = _sessions[i];
                 }
             }
         }
+
 
         private void gkh_KeyDown(object sender, KeyEventArgs e)
         {
@@ -68,25 +62,23 @@ namespace SpotifyCompanion
                 case Keys.RShiftKey:
                     listBox1.Items.Add("Shift key pressed");
 
-                    this.session.SimpleAudioVolume.Mute = !this.session.SimpleAudioVolume.Mute;
+                    this._session.SimpleAudioVolume.Mute = !this._session.SimpleAudioVolume.Mute;
                     
                     break;
 
                 case Keys.Home:
                     listBox1.Items.Add("Home key pressed");
-                    this.session.SimpleAudioVolume.Volume += (float) 0.10;
+                    this._session.SimpleAudioVolume.Volume += (float) 0.10;
                     break;
 
                 case Keys.End:
                     listBox1.Items.Add("End key pressed");
-                    this.session.SimpleAudioVolume.Volume -= (float) 0.10;
+                    this._session.SimpleAudioVolume.Volume -= (float) 0.10;
                     break;
             }
         }
 
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) { }
-        
-
     }
 }

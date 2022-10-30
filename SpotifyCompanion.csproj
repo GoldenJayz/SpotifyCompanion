@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NAudio">
-      <HintPath>..\..\..\Downloads\NAudio.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
